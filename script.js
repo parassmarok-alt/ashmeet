@@ -10,63 +10,64 @@ const buttons = document.getElementById("letter-buttons");
 const finalText = document.getElementById("final-text");
 
 // Click Envelope
-
 envelope.addEventListener("click", () => {
-    envelope.style.display = "none";
-    letter.style.display = "flex";
+  envelope.style.display = "none";
+  letter.style.display = "flex";
 
-    setTimeout( () => {
-        document.querySelector(".letter-window").classList.add("open");
-    },50);
+  setTimeout(() => {
+    document.querySelector(".letter-window").classList.add("open");
+  }, 50);
 });
 
-// Logic to move the NO btn
+// Messages for NO button
+const noMessages = [
+  "are u sure?",
+  "wow… u just hate me ",
+  "NIGGA 😭",
+  "be so fr",
+  "ashuuuuu",
+  "mf why 😤",
+  "dil todh ta 💔",
+  "ur so mean",
+  "i see how it is 😒",
+  "chal kr de meri jaan"
+];
 
+let noCount = 0;
+let originalTitle = title.textContent;
+
+// Logic to move the NO btn + change text
 noBtn.addEventListener("mouseover", () => {
-    const min = 200;
-    const max = 200;
+  // change message
+  title.textContent = noMessages[noCount % noMessages.length];
+  noCount++;
 
-    const distance = Math.random() * (max - min) + min;
-    const angle = Math.random() * Math.PI * 2;
+  // move button
+  const distance = 200; // keeps your same "min=max=200" behavior
+  const angle = Math.random() * Math.PI * 2;
 
-    const moveX = Math.cos(angle) * distance;
-    const moveY = Math.sin(angle) * distance;
+  const moveX = Math.cos(angle) * distance;
+  const moveY = Math.sin(angle) * distance;
 
-    noBtn.style.transition = "transform 0.3s ease";
-    noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+  noBtn.style.transition = "transform 0.25s ease";
+  noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+
+  // optional: after a bit, return to the original title (comment out if you don't want this)
+  clearTimeout(noBtn._titleTimeout);
+  noBtn._titleTimeout = setTimeout(() => {
+    // only revert if YES hasn't been clicked
+    if (buttons.style.display !== "none") {
+      title.textContent = originalTitle;
+    }
+  }, 1200);
 });
-
-// Logic to make YES btn to grow
-
-// let yesScale = 1;
-
-// yesBtn.style.position = "relative"
-// yesBtn.style.transformOrigin = "center center";
-// yesBtn.style.transition = "transform 0.3s ease";
-
-// noBtn.addEventListener("click", () => {
-//     yesScale += 2;
-
-//     if (yesBtn.style.position !== "fixed") {
-//         yesBtn.style.position = "fixed";
-//         yesBtn.style.top = "50%";
-//         yesBtn.style.left = "50%";
-//         yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
-//     }else{
-//         yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
-//     }
-// });
 
 // YES is clicked
-
 yesBtn.addEventListener("click", () => {
-    title.textContent ="BALLEEEEEE!";
+  title.textContent = "BALLEEEEEE!";
+  catImg.src = "cat_dance.gif";
 
-    catImg.src = "cat_dance.gif";
-
-    document.querySelector(".letter-window").classList.add("final");
-
-    buttons.style.display = "none";
-
-    finalText.style.display = "block";
+  document.querySelector(".letter-window").classList.add("final");
+  buttons.style.display = "none";
+  finalText.style.display = "block";
 });
