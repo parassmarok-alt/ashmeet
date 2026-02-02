@@ -9,9 +9,7 @@ const catImg = document.getElementById("letter-cat");
 const buttons = document.getElementById("letter-buttons");
 const finalText = document.getElementById("final-text");
 
-// --------------------
-// Envelope click
-// --------------------
+// Click Envelope
 envelope.addEventListener("click", () => {
   envelope.style.display = "none";
   letter.style.display = "flex";
@@ -21,120 +19,49 @@ envelope.addEventListener("click", () => {
   }, 50);
 });
 
-// --------------------
-// NO button messages
-// --------------------
+// Messages for NO button
 const noMessages = [
-  "are u sure?",
-  "wow… u just hate me",
+  "wow… u just hate me ",
   "NIGGA 😭",
   "be so fr",
-  "ashuuuuu",
+  "ashuuuuu", 
   "mf why 😤",
   "dil todh ta 💔",
   "ur so mean",
   "i see how it is 😒",
-  "chal kr de meri jaan"
+  "chal kr de meri jaan",
 ];
 
 let noCount = 0;
-const originalTitle = title.textContent;
+let originalTitle = title.textContent;
 
-// --------------------
-// YES grow setup
-// --------------------
-let yesScale = 1;
-let yesLocked = false;
-
-yesBtn.style.position = "fixed";
-yesBtn.style.left = "50%";
-yesBtn.style.top = "50%";
-yesBtn.style.transformOrigin = "center center";
-yesBtn.style.transition = "transform 0.25s ease";
-
-function applyYesTransform() {
-  yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
-}
-
-function lockYesIfNeeded() {
-  if (yesLocked) return;
-  yesLocked = true;
-  applyYesTransform();
-}
-
-function growYes() {
-  lockYesIfNeeded();
-  yesScale += 0.18;
-  if (yesScale > 3.2) yesScale = 3.2;
-  applyYesTransform();
-}
-
-// --------------------
-// Phone vibration
-// --------------------
-function vibratePhone(pattern = 30) {
-  if ("vibrate" in navigator) navigator.vibrate(pattern);
-}
-
-// --------------------
-// NO button move logic
-// --------------------
-function moveNoButton() {
-  // Change text
+// Logic to move the NO btn + change text
+noBtn.addEventListener("mouseover", () => {
+  // change message
   title.textContent = noMessages[noCount % noMessages.length];
   noCount++;
 
-  // YES grows every escape
-  growYes();
+  // move button
+  const distance = 200; // keeps your same "min=max=200" behavior
+  const angle = Math.random() * Math.PI * 2;
 
-  // Phone vibration (Android mostly)
-  vibratePhone([20, 30, 20]);
+  const moveX = Math.cos(angle) * distance;
+  const moveY = Math.sin(angle) * distance;
 
-  // Keep NO inside screen
-  const rect = noBtn.getBoundingClientRect();
-  const padding = 16;
+  noBtn.style.transition = "transform 0.25s ease";
+  noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
 
-  const maxX = window.innerWidth - rect.width - padding;
-  const maxY = window.innerHeight - rect.height - padding;
-
-  const randomX = Math.max(padding, Math.random() * maxX);
-  const randomY = Math.max(padding, Math.random() * maxY);
-
-  noBtn.style.position = "fixed";
-  noBtn.style.transition = "transform 0.2s ease";
-  noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
-
-  // Reset title after a bit (if YES not clicked)
+  // optional: after a bit, return to the original title (comment out if you don't want this)
   clearTimeout(noBtn._titleTimeout);
   noBtn._titleTimeout = setTimeout(() => {
+    // only revert if YES hasn't been clicked
     if (buttons.style.display !== "none") {
       title.textContent = originalTitle;
     }
   }, 1200);
-}
-
-// Desktop hover
-noBtn.addEventListener("mouseover", moveNoButton);
-
-// Mobile tap
-noBtn.addEventListener(
-  "touchstart",
-  (e) => {
-    e.preventDefault();
-    moveNoButton();
-  },
-  { passive: false }
-);
-
-// Backup click handler
-noBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  moveNoButton();
 });
 
-// --------------------
-// YES clicked
-// --------------------
+// YES is clicked
 yesBtn.addEventListener("click", () => {
   title.textContent = "BALLEEEEEE!";
   catImg.src = "cat_dance.gif";
@@ -142,8 +69,4 @@ yesBtn.addEventListener("click", () => {
   document.querySelector(".letter-window").classList.add("final");
   buttons.style.display = "none";
   finalText.style.display = "block";
-
-  // Celebration vibration
-  vibratePhone([40, 40, 80, 40, 120]);
 });
-
